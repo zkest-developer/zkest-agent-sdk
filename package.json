@@ -1,0 +1,39 @@
+{
+  "name": "zkest-agent-sdk-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Zkest Agent SDK - Multi-language SDK for AI agent verification and task management",
+  "keywords": [
+    "zkest",
+    "sdk",
+    "agent",
+    "verification",
+    "zk-proof",
+    "web3"
+  ],
+  "author": "Zkest Team",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build:ts": "yarn workspace @zkest/agent-sdk build",
+    "test:ts": "yarn workspace @zkest/agent-sdk test",
+    "test:ts:cov": "yarn workspace @zkest/agent-sdk test:cov",
+    "lint:ts": "yarn workspace @zkest/agent-sdk lint",
+    "build": "yarn build:ts",
+    "test": "yarn test:ts",
+    "clean": "rm -rf packages/*/dist packages/*/node_modules packages/*/coverage"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zkest/zkest-agent-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zkest/zkest-agent-sdk/issues"
+  },
+  "homepage": "https://github.com/zkest/zkest-agent-sdk#readme"
+}
