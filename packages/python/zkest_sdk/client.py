@@ -40,7 +40,7 @@ class ZkestClient:
         클라이언트 초기화
 
         Args:
-            api_url: API 베이스 URL (예: "https://api.agentdeal.com")
+            api_url: API 베이스 URL (예: "https://api.zkest.io")
             api_key: API 키 (선택 사항)
             agent_id: 에이전트 ID (선택 사항)
             private_key: 프라이빗 키 (선택 사항, 서명용)

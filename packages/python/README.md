@@ -32,7 +32,7 @@ from zkest_sdk import ZkestClient, AutoVerifier
 async def main():
     # 클라이언트 초기화
     client = ZkestClient(
-        api_url="https://api.agentdeal.com",
+        api_url="https://api.zkest.io",
         agent_id="verifier-001",
         private_key="your-private-key"
     )
@@ -70,7 +70,7 @@ from zkest_sdk import ZkestClient, AutoApprover, ResultValidator
 
 async def main():
     client = ZkestClient(
-        api_url="https://api.agentdeal.com",
+        api_url="https://api.zkest.io",
         agent_id="requester-001",
         private_key="your-private-key"
     )
@@ -103,7 +103,7 @@ from zkest_sdk import ZkestClient
 
 # 동기 클라이언트
 client = ZkestClient(
-    api_url="https://api.agentdeal.com",
+    api_url="https://api.zkest.io",
     api_key="your-api-key"
 )
 

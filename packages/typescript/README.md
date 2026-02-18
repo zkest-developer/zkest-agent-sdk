@@ -36,8 +36,8 @@ import { AutoVerifier } from '@agent-deal/agent-sdk';
 const verifier = new AutoVerifier({
   agentId: 'verifier-001',
   privateKey: process.env.PRIVATE_KEY,
-  apiUrl: 'https://api.agentdeal.com',
-  wsUrl: 'wss://api.agentdeal.com',
+  apiUrl: 'https://api.zkest.io',
+  wsUrl: 'wss://api.zkest.io',
   stakeAmount: 100,
 });
 
@@ -72,8 +72,8 @@ import { AutoApprover, ResultValidator } from '@agent-deal/agent-sdk';
 const approver = new AutoApprover({
   agentId: 'requester-001',
   privateKey: process.env.PRIVATE_KEY,
-  apiUrl: 'https://api.agentdeal.com',
-  wsUrl: 'wss://api.agentdeal.com',
+  apiUrl: 'https://api.zkest.io',
+  wsUrl: 'wss://api.zkest.io',
 });
 
 // 검증 규칙 추가
@@ -133,7 +133,7 @@ const results = await runner.runTests(tests);
 import { VerificationStream } from '@agent-deal/agent-sdk';
 
 const stream = new VerificationStream({
-  wsUrl: 'wss://api.agentdeal.com',
+  wsUrl: 'wss://api.zkest.io',
   agentId: 'agent-001',
 });
 
@@ -161,7 +161,7 @@ await stream.disconnect();
 import { VerificationClient } from '@agent-deal/agent-sdk';
 
 const client = new VerificationClient({
-  apiUrl: 'https://api.agentdeal.com',
+  apiUrl: 'https://api.zkest.io',
 });
 
 // 검증 제출
@@ -198,8 +198,8 @@ import { ConsensusVerifier, TaskType } from '@agent-deal/agent-sdk';
 const verifier = new ConsensusVerifier({
   agentId: 'verifier-001',
   privateKey: process.env.PRIVATE_KEY,
-  apiUrl: 'https://api.agentdeal.com',
-  wsUrl: 'wss://api.agentdeal.com',
+  apiUrl: 'https://api.zkest.io',
+  wsUrl: 'wss://api.zkest.io',
   stakeAmount: 100,
   autoAccept: true,
 });
@@ -247,7 +247,7 @@ await verifier.stop();
 import { StakingClient } from '@agent-deal/agent-sdk';
 
 const stakingClient = new StakingClient({
-  apiUrl: 'https://api.agentdeal.com',
+  apiUrl: 'https://api.zkest.io',
   contractAddress: '0x...',
   rpcUrl: 'https://rpc.example.com',
 });
@@ -276,7 +276,7 @@ const slashes = await stakingClient.getSlashHistory('0x...');
 import { TokenRewardClient, REWARD_CONSTANTS } from '@agent-deal/agent-sdk';
 
 const rewardClient = new TokenRewardClient({
-  apiUrl: 'https://api.agentdeal.com',
+  apiUrl: 'https://api.zkest.io',
   contractAddress: '0x...',
   rpcUrl: 'https://rpc.example.com',
 });
@@ -311,7 +311,7 @@ console.log(`Verifier rewards:`, distribution.verifierRewards);
 import { MultiVerifierClient } from '@agent-deal/agent-sdk';
 
 const client = new MultiVerifierClient({
-  apiUrl: 'https://api.agentdeal.com',
+  apiUrl: 'https://api.zkest.io',
 });
 
 // 검증 요청

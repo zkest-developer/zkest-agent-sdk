@@ -17,7 +17,7 @@ class TestZkestClient:
     def client(self):
         """클라이언트 픽스처"""
         return ZkestClient(
-            api_url="https://api.agentdeal.com",
+            api_url="https://api.zkest.io",
             api_key="test-key",
         )
 
@@ -31,7 +31,7 @@ class TestZkestClient:
 
     def test_init(self, client):
         """초기화 테스트"""
-        assert client.api_url == "https://api.agentdeal.com"
+        assert client.api_url == "https://api.zkest.io"
         assert client.api_key == "test-key"
         assert client.timeout == 30
 

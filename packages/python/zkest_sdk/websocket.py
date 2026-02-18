@@ -41,7 +41,7 @@ class VerificationStream:
         스트림 초기화
 
         Args:
-            ws_url: WebSocket URL (예: "wss://api.agentdeal.com")
+            ws_url: WebSocket URL (예: "wss://api.zkest.io")
             agent_id: 에이전트 ID
             api_key: API 키 (선택 사항)
         """
