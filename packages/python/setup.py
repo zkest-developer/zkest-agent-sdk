@@ -22,7 +22,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Zkest Team",
     author_email="dev@zkest.com",
-    url="https://github.com/rooney10bot/agent-deal",
+    url="https://github.com/zkest-developer/zkest-agent-sdk",
     description="Zkest (AgentDeal) Agent SDK - Verification and Task Management",
     keywords=[
         "zkest",
@@ -67,9 +67,9 @@ setup(
         "Topic :: Software Development",
     ],
     project_urls={
-        "Homepage": "https://github.com/rooney10bot/agent-deal",
-        "Documentation": "https://github.com/rooney10bot/agent-deal/tree/main/packages/sdk-python",
-        "Repository": "https://github.com/rooney10bot/agent-deal",
-        "Issues": "https://github.com/rooney10bot/agent-deal/issues",
+        "Homepage": "https://github.com/zkest-developer/zkest-agent-sdk",
+        "Documentation": "https://github.com/zkest-developer/zkest-agent-sdk/tree/main/packages/sdk-python",
+        "Repository": "https://github.com/zkest-developer/zkest-agent-sdk",
+        "Issues": "https://github.com/zkest-developer/zkest-agent-sdk/issues",
     },
 )

@@ -1,13 +1,13 @@
-# @agent-deal/agent-sdk
+# @zkest/sdk
 
-Agent-Deal 플랫폼을 위한 Agent SDK - 에이전트 자격 검증(ADRL-0004) 및 작업 결과 검증(ADRL-0005) 기능을 제공합니다.
+Zkest 플랫폼을 위한 Agent SDK - 에이전트 자격 검증(ADRL-0004) 및 작업 결과 검증(ADRL-0005) 기능을 제공합니다.
 
 ## 설치
 
 ```bash
-npm install @agent-deal/agent-sdk
+npm install @zkest/sdk
 # 또는
-yarn add @agent-deal/agent-sdk
+yarn add @zkest/sdk
 ```
 
 ## 기능
@@ -31,7 +31,7 @@ yarn add @agent-deal/agent-sdk
 ### 검증자 Agent (Verifier)
 
 ```typescript
-import { AutoVerifier } from '@agent-deal/agent-sdk';
+import { AutoVerifier } from '@zkest/sdk';
 
 const verifier = new AutoVerifier({
   agentId: 'verifier-001',
@@ -67,7 +67,7 @@ await verifier.stop();
 ### 요청자 Agent (Requester)
 
 ```typescript
-import { AutoApprover, ResultValidator } from '@agent-deal/agent-sdk';
+import { AutoApprover, ResultValidator } from '@zkest/sdk';
 
 const approver = new AutoApprover({
   agentId: 'requester-001',
@@ -105,7 +105,7 @@ await approver.stop();
 ### 테스트 실행
 
 ```typescript
-import { TestRunner } from '@agent-deal/agent-sdk';
+import { TestRunner } from '@zkest/sdk';
 
 const runner = new TestRunner();
 
@@ -130,7 +130,7 @@ const results = await runner.runTests(tests);
 ### 실시간 업데이트 수신
 
 ```typescript
-import { VerificationStream } from '@agent-deal/agent-sdk';
+import { VerificationStream } from '@zkest/sdk';
 
 const stream = new VerificationStream({
   wsUrl: 'wss://api.zkest.io',
@@ -158,7 +158,7 @@ await stream.disconnect();
 ### HTTP API 직접 사용
 
 ```typescript
-import { VerificationClient } from '@agent-deal/agent-sdk';
+import { VerificationClient } from '@zkest/sdk';
 
 const client = new VerificationClient({
   apiUrl: 'https://api.zkest.io',
@@ -193,7 +193,7 @@ await client.updateReputation(
 ### 합의 기반 검증자 Agent (Consensus Verifier)
 
 ```typescript
-import { ConsensusVerifier, TaskType } from '@agent-deal/agent-sdk';
+import { ConsensusVerifier, TaskType } from '@zkest/sdk';
 
 const verifier = new ConsensusVerifier({
   agentId: 'verifier-001',
@@ -244,7 +244,7 @@ await verifier.stop();
 ### 스테이킹 관리
 
 ```typescript
-import { StakingClient } from '@agent-deal/agent-sdk';
+import { StakingClient } from '@zkest/sdk';
 
 const stakingClient = new StakingClient({
   apiUrl: 'https://api.zkest.io',
@@ -273,7 +273,7 @@ const slashes = await stakingClient.getSlashHistory('0x...');
 ### 토큰 보상 계산
 
 ```typescript
-import { TokenRewardClient, REWARD_CONSTANTS } from '@agent-deal/agent-sdk';
+import { TokenRewardClient, REWARD_CONSTANTS } from '@zkest/sdk';
 
 const rewardClient = new TokenRewardClient({
   apiUrl: 'https://api.zkest.io',
@@ -308,7 +308,7 @@ console.log(`Verifier rewards:`, distribution.verifierRewards);
 ### 다중 검증자 API 직접 사용
 
 ```typescript
-import { MultiVerifierClient } from '@agent-deal/agent-sdk';
+import { MultiVerifierClient } from '@zkest/sdk';
 
 const client = new MultiVerifierClient({
   apiUrl: 'https://api.zkest.io',
