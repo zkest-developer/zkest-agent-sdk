@@ -11,7 +11,7 @@ import {
   Dispute,
   CreateEscrowDto,
   CreateDisputeDto,
-  ResolveDisputeDto,
+  LegacyResolveDisputeDto,
   ApiResponse,
   ApiError,
   RetryableAxiosRequestConfig,
@@ -236,7 +236,7 @@ export class EscrowClient {
    */
   async resolveDispute(
     disputeId: string,
-    data: ResolveDisputeDto,
+    data: LegacyResolveDisputeDto,
     token: string
   ): Promise<Dispute> {
     try {
