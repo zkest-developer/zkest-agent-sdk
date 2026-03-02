@@ -1,0 +1,110 @@
+# Core Sync Manifest
+
+> Generated: 2026-03-03 00:41:09 KST
+
+## Changed Files
+- .nvmrc
+- docs/changes/
+- docs/todo/CURRENT.md
+- docs/todo/ROADMAP.md
+- package.json
+- packages/backend/src/modules/admin/
+- packages/backend/src/modules/agents/agents.controller.spec.ts
+- packages/backend/src/modules/agents/agents.controller.ts
+- packages/backend/src/modules/agents/security/agents.controller.security.spec.ts
+- packages/backend/src/modules/auth/auth.module.ts
+- packages/backend/src/modules/auth/decorators/current-agent.decorator.ts
+- packages/backend/src/modules/auth/guards/unified-auth.guard.ts
+- packages/backend/src/modules/blockchain/blockchain.service.ts
+- packages/backend/src/modules/disputes/disputes.controller.spec.ts
+- packages/backend/src/modules/disputes/disputes.controller.ts
+- packages/backend/src/modules/ledger/
+- packages/backend/src/modules/notifications/
+- packages/backend/src/modules/payments/payments.controller.spec.ts
+- packages/backend/src/modules/payments/payments.controller.ts
+- packages/backend/src/modules/verifications/task-verification.controller.spec.ts
+- packages/backend/src/modules/verifications/task-verification.controller.ts
+- packages/backend/src/modules/verifications/task-verification.service.spec.ts
+- packages/backend/src/modules/verifications/task-verification.service.ts
+- packages/backend/src/modules/verifications/verifications.controller.spec.ts
+- packages/backend/src/modules/verifications/verifications.controller.ts
+- packages/contracts/package.json
+- scripts/sync/
+
+## API Endpoints Touched
+- packages/backend/src/modules/admin/admin.controller.ts
+  - base: /admin
+  -   @Get('dashboard')
+  -   @Get('activity')
+- packages/backend/src/modules/agents/agents.controller.ts
+  - base: /agents
+  -   @Post()
+  -   @Get()
+  -   @Get('top')
+  -   @Get('stats/:id')
+  -   @Get('wallet/:walletAddress')
+  -   @Get(':id')
+  -   @Get(':id/skills')
+  -   @Post(':id/skills')
+  -   @Patch('skills/:skillId/verify')
+  -   @Patch(':id/tier')
+  -   @Patch(':id')
+  -   @Patch(':id/deactivate')
+  -   @Patch(':id/reactivate')
+- packages/backend/src/modules/disputes/disputes.controller.ts
+  - base: /disputes
+  -   @Post()
+  -   @Get()
+  -   @Get('statistics')
+  -   @Get(':id')
+  -   @Patch(':id/resolve')
+  -   @Patch(':id/escalate')
+- packages/backend/src/modules/ledger/ledger.controller.ts
+  - base: /ledger
+  -   @Post('entries')
+  -   @Get('entries')
+  -   @Post('process-batch')
+  -   @Get('summary')
+- packages/backend/src/modules/notifications/notifications.controller.ts
+  - base: /notifications
+  -   @Post()
+  -   @Get()
+  -   @Patch(':id/read')
+  -   @Patch('read-all')
+  -   @Get('unread-count')
+- packages/backend/src/modules/payments/payments.controller.ts
+  - base: /payments
+  -   @Post()
+  -   @Get()
+  -   @Get('statistics')
+  -   @Get(':id')
+  -   @Get('assignment/:assignmentId')
+  -   @Get('address/:address')
+  -   @Post(':id/status')
+- packages/backend/src/modules/verifications/task-verification.controller.ts
+  - base: /tasks
+  -   @Post(':taskId/verification-request')
+  -   @Get(':taskId/verifiers')
+  -   @Post(':taskId/verifications')
+  -   @Post(':taskId/auto-approve')
+  -   @Get('verifications/:verificationId')
+  -   @Get(':taskId/verifications')
+  -   @Get('verifiers/pending')
+  -   @Get('verifiers/:verifierId/metrics')
+- packages/backend/src/modules/verifications/verifications.controller.ts
+  - base: /verifications
+  -   @Post()
+  -   @Get('pending')
+  -   @Get(':id')
+  -   @Patch(':id')
+  -   @Get('agents/:agentId/metrics')
+  -   @Post('agents/:agentId/reputation')
+  -   @Get('agents/:agentId/history')
+  -   @Patch('agents/:agentId/tier')
+
+## Docs/SDK Sync Checklist
+- [ ] zkest-agent-docs API reference update
+- [ ] zkest-agent-docs examples update
+- [ ] zkest-agent-sdk TS client endpoints sync
+- [ ] zkest-agent-sdk Python client endpoints sync
+- [ ] changelog/release note update

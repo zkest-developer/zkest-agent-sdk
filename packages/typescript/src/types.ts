@@ -726,6 +726,159 @@ export interface ResolveDisputeDto {
 }
 
 /**
+ * Notification Type
+ * @spec zkest-core notifications module
+ */
+export enum NotificationType {
+  TASK = 'task',
+  DISPUTE = 'dispute',
+  PAYMENT = 'payment',
+  SYSTEM = 'system',
+}
+
+/**
+ * Notification (Core)
+ * @spec zkest-core notifications module
+ */
+export interface CoreNotification {
+  id: string;
+  recipientWallet: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  metadata?: Record<string, string | number | boolean>;
+  isRead: boolean;
+  readAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/**
+ * Create Notification DTO
+ * @spec zkest-core notifications module
+ */
+export interface CreateNotificationDto {
+  recipientWallet: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  metadata?: Record<string, string | number | boolean>;
+}
+
+/**
+ * Ledger Reference Type
+ * @spec zkest-core ledger module
+ */
+export enum LedgerReferenceType {
+  ESCROW = 'escrow',
+  PAYMENT = 'payment',
+  DISPUTE = 'dispute',
+  FEE = 'fee',
+  ADJUSTMENT = 'adjustment',
+}
+
+/**
+ * Ledger Direction
+ * @spec zkest-core ledger module
+ */
+export enum LedgerDirection {
+  DEBIT = 'debit',
+  CREDIT = 'credit',
+}
+
+/**
+ * Ledger Status
+ * @spec zkest-core ledger module
+ */
+export enum LedgerStatus {
+  PENDING = 'pending',
+  POSTED = 'posted',
+  FAILED = 'failed',
+}
+
+/**
+ * Ledger Entry (Core)
+ * @spec zkest-core ledger module
+ */
+export interface CoreLedgerEntry {
+  id: string;
+  referenceType: LedgerReferenceType;
+  referenceId: string;
+  fromAddress?: string;
+  toAddress?: string;
+  tokenAddress: string;
+  amount: string;
+  direction: LedgerDirection;
+  status: LedgerStatus;
+  batchId?: string;
+  metadata?: Record<string, string | number | boolean>;
+  processedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/**
+ * Create Ledger Entry DTO
+ * @spec zkest-core ledger module
+ */
+export interface CreateLedgerEntryDto {
+  referenceType: LedgerReferenceType;
+  referenceId: string;
+  fromAddress?: string;
+  toAddress?: string;
+  tokenAddress: string;
+  amount: string;
+  direction: LedgerDirection;
+  metadata?: Record<string, string | number | boolean>;
+}
+
+/**
+ * Admin dashboard metrics
+ * @spec zkest-core admin module
+ */
+export interface AdminDashboardMetrics {
+  totals: {
+    agents: number;
+    activeAgents: number;
+    tasks: number;
+    escrows: number;
+    disputes: number;
+    payments: number;
+  };
+  updatedAt: string;
+}
+
+/**
+ * Admin recent activity payload
+ * @spec zkest-core admin module
+ */
+export interface AdminRecentActivity {
+  recentTasks: Record<string, unknown>[];
+  recentEscrows: Record<string, unknown>[];
+  recentDisputes: Record<string, unknown>[];
+  recentPayments: Record<string, unknown>[];
+}
+
+/**
+ * Ledger batch process result
+ * @spec zkest-core ledger module
+ */
+export interface LedgerBatchResult {
+  batchId: string;
+  processedCount: number;
+}
+
+/**
+ * Ledger summary payload
+ * @spec zkest-core ledger module
+ */
+export interface LedgerSummary {
+  totalEntries: number;
+  byStatus: Record<string, number>;
+  postedVolume: string;
+}
+
+/**
  * Reputation Event
  * @spec ADRL-0003
  */
@@ -826,6 +979,18 @@ export interface DisputeFilterDto extends PaginationQuery {
   initiatorId?: string;
   arbitratorId?: string;
   status?: DisputeStatus;
+}
+
+export interface NotificationFilterDto extends PaginationQuery {
+  recipientWallet?: string;
+  type?: NotificationType;
+  isRead?: boolean;
+}
+
+export interface LedgerFilterDto extends PaginationQuery {
+  status?: LedgerStatus;
+  referenceType?: LedgerReferenceType;
+  batchId?: string;
 }
 
 // ============================================================

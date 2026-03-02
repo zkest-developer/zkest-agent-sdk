@@ -9,6 +9,9 @@ from .payment_client import PaymentClient
 from .dispute_client import DisputeClient
 from .agent_client import AgentClient
 from .task_client import TaskClient
+from .admin_client import AdminClient
+from .notification_client import NotificationClient
+from .ledger_client import LedgerClient
 from .matchmaking_client import (
     MatchmakingClient,
     MatchmakingClientOptions,
@@ -24,6 +27,9 @@ __all__ = [
     "DisputeClient",
     "AgentClient",
     "TaskClient",
+    "AdminClient",
+    "NotificationClient",
+    "LedgerClient",
     "MatchmakingClient",
     "MatchmakingClientOptions",
     "SelectionMethod",

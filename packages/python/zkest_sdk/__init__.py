@@ -30,6 +30,10 @@ from zkest_sdk.types import (
     PaymentStatus,
     DisputeStatus,
     DisputeResolution,
+    NotificationType,
+    LedgerReferenceType,
+    LedgerDirection,
+    LedgerStatus,
     AssignmentStatus,
     VerificationMethod,
     ReputationEventType,
@@ -55,6 +59,16 @@ from zkest_sdk.types import (
     CoreDispute,
     CreateDisputeDto,
     ResolveDisputeDto,
+    CoreNotification,
+    CreateNotificationDto,
+    NotificationBatchUpdateResult,
+    CoreLedgerEntry,
+    CreateLedgerEntryDto,
+    LedgerBatchResult,
+    LedgerSummary,
+    AdminDashboardTotals,
+    AdminDashboardMetrics,
+    AdminRecentActivity,
     ReputationEvent,
     ProofData,
     CoreVerification,
@@ -64,6 +78,8 @@ from zkest_sdk.types import (
     BidFilterDto,
     PaymentFilterDto,
     DisputeFilterDto,
+    NotificationFilterDto,
+    LedgerFilterDto,
     # Agent Client Types
     AgentTier,
     AgentSkill,
@@ -75,7 +91,16 @@ from zkest_sdk.types import (
     CreateTaskDto,
     UpdateTaskDto,
 )
-from zkest_sdk.clients import BidClient, PaymentClient, DisputeClient, AgentClient, TaskClient
+from zkest_sdk.clients import (
+    BidClient,
+    PaymentClient,
+    DisputeClient,
+    AgentClient,
+    TaskClient,
+    AdminClient,
+    NotificationClient,
+    LedgerClient,
+)
 from zkest_sdk.clients.bid_client import BidClientOptions
 from zkest_sdk.clients.payment_client import (
     PaymentClientOptions,
@@ -88,6 +113,9 @@ from zkest_sdk.clients.dispute_client import (
 )
 from zkest_sdk.clients.agent_client import AgentClientOptions
 from zkest_sdk.clients.task_client import TaskClientOptions
+from zkest_sdk.clients.admin_client import AdminClientOptions
+from zkest_sdk.clients.notification_client import NotificationClientOptions
+from zkest_sdk.clients.ledger_client import LedgerClientOptions
 from zkest_sdk.clients.matchmaking_client import (
     MatchmakingClient,
     MatchmakingClientOptions,
@@ -119,6 +147,9 @@ __all__ = [
     "DisputeClient",
     "AgentClient",
     "TaskClient",
+    "AdminClient",
+    "NotificationClient",
+    "LedgerClient",
     "MatchmakingClient",
     "BidClientOptions",
     "PaymentClientOptions",
@@ -128,6 +159,9 @@ __all__ = [
     "DisputeStatistics",
     "AgentClientOptions",
     "TaskClientOptions",
+    "AdminClientOptions",
+    "NotificationClientOptions",
+    "LedgerClientOptions",
     "MatchmakingClientOptions",
     "SelectionMethod",
     "MatchRequest",
@@ -157,6 +191,10 @@ __all__ = [
     "PaymentStatus",
     "DisputeStatus",
     "DisputeResolution",
+    "NotificationType",
+    "LedgerReferenceType",
+    "LedgerDirection",
+    "LedgerStatus",
     "AssignmentStatus",
     "VerificationMethod",
     "ReputationEventType",
@@ -182,6 +220,16 @@ __all__ = [
     "CoreDispute",
     "CreateDisputeDto",
     "ResolveDisputeDto",
+    "CoreNotification",
+    "CreateNotificationDto",
+    "NotificationBatchUpdateResult",
+    "CoreLedgerEntry",
+    "CreateLedgerEntryDto",
+    "LedgerBatchResult",
+    "LedgerSummary",
+    "AdminDashboardTotals",
+    "AdminDashboardMetrics",
+    "AdminRecentActivity",
     "ReputationEvent",
     "ProofData",
     "CoreVerification",
@@ -191,6 +239,8 @@ __all__ = [
     "BidFilterDto",
     "PaymentFilterDto",
     "DisputeFilterDto",
+    "NotificationFilterDto",
+    "LedgerFilterDto",
     # Agent Client Types
     "AgentTier",
     "AgentSkill",

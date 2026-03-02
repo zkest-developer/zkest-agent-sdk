@@ -129,6 +129,40 @@ class DisputeResolution(str, Enum):
     SPLIT = "split"
 
 
+class NotificationType(str, Enum):
+    """알림 타입"""
+
+    TASK = "task"
+    DISPUTE = "dispute"
+    PAYMENT = "payment"
+    SYSTEM = "system"
+
+
+class LedgerReferenceType(str, Enum):
+    """원장 참조 타입"""
+
+    ESCROW = "escrow"
+    PAYMENT = "payment"
+    DISPUTE = "dispute"
+    FEE = "fee"
+    ADJUSTMENT = "adjustment"
+
+
+class LedgerDirection(str, Enum):
+    """원장 방향"""
+
+    DEBIT = "debit"
+    CREDIT = "credit"
+
+
+class LedgerStatus(str, Enum):
+    """원장 상태"""
+
+    PENDING = "pending"
+    POSTED = "posted"
+    FAILED = "failed"
+
+
 class AssignmentStatus(str, Enum):
     """할당 상태
     @spec ADRL-0003
@@ -494,6 +528,121 @@ class ResolveDisputeDto:
 
 
 @dataclass
+class CoreNotification:
+    """알림 정보 (Core)"""
+
+    id: str
+    recipient_wallet: str
+    type: NotificationType
+    title: str
+    message: str
+    metadata: Dict[str, Any] = field(default_factory=dict)
+    is_read: bool = False
+    read_at: Optional[datetime] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+
+@dataclass
+class CreateNotificationDto:
+    """알림 생성 DTO"""
+
+    recipient_wallet: str
+    type: NotificationType
+    title: str
+    message: str
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class NotificationBatchUpdateResult:
+    """알림 일괄 업데이트 결과"""
+
+    updated: int
+
+
+@dataclass
+class CoreLedgerEntry:
+    """원장 엔트리 (Core)"""
+
+    id: str
+    reference_type: LedgerReferenceType
+    reference_id: str
+    token_address: str
+    amount: str
+    direction: LedgerDirection
+    status: LedgerStatus
+    from_address: Optional[str] = None
+    to_address: Optional[str] = None
+    batch_id: Optional[str] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
+    processed_at: Optional[datetime] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+
+@dataclass
+class CreateLedgerEntryDto:
+    """원장 엔트리 생성 DTO"""
+
+    reference_type: LedgerReferenceType
+    reference_id: str
+    token_address: str
+    amount: str
+    direction: LedgerDirection
+    from_address: Optional[str] = None
+    to_address: Optional[str] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class LedgerBatchResult:
+    """원장 배치 처리 결과"""
+
+    batch_id: str
+    processed_count: int
+
+
+@dataclass
+class LedgerSummary:
+    """원장 요약"""
+
+    total_entries: int
+    by_status: Dict[str, int] = field(default_factory=dict)
+    posted_volume: str = "0"
+
+
+@dataclass
+class AdminDashboardTotals:
+    """어드민 대시보드 집계"""
+
+    agents: int
+    active_agents: int
+    tasks: int
+    escrows: int
+    disputes: int
+    payments: int
+
+
+@dataclass
+class AdminDashboardMetrics:
+    """어드민 대시보드 메트릭"""
+
+    totals: AdminDashboardTotals
+    updated_at: str
+
+
+@dataclass
+class AdminRecentActivity:
+    """어드민 최근 활동"""
+
+    recent_tasks: List[Dict[str, Any]] = field(default_factory=list)
+    recent_escrows: List[Dict[str, Any]] = field(default_factory=list)
+    recent_disputes: List[Dict[str, Any]] = field(default_factory=list)
+    recent_payments: List[Dict[str, Any]] = field(default_factory=list)
+
+
+@dataclass
 class ReputationEvent:
     """평판 이벤트
     @spec ADRL-0003
@@ -590,6 +739,24 @@ class DisputeFilterDto(PaginationQuery):
     initiator_id: Optional[str] = None
     arbitrator_id: Optional[str] = None
     status: Optional[DisputeStatus] = None
+
+
+@dataclass
+class NotificationFilterDto(PaginationQuery):
+    """알림 필터 DTO"""
+
+    recipient_wallet: Optional[str] = None
+    type: Optional[NotificationType] = None
+    is_read: Optional[bool] = None
+
+
+@dataclass
+class LedgerFilterDto(PaginationQuery):
+    """원장 필터 DTO"""
+
+    status: Optional[LedgerStatus] = None
+    reference_type: Optional[LedgerReferenceType] = None
+    batch_id: Optional[str] = None
 
 
 # ============================================================

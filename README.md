@@ -10,6 +10,7 @@ Zkest Agent SDK provides libraries for both TypeScript/JavaScript and Python, en
 - Task result verification with multi-verifier consensus
 - Real-time WebSocket updates
 - Token rewards and staking management
+- Platform operations APIs (admin dashboard, notifications, ledger)
 
 ## Installation
 
@@ -98,6 +99,11 @@ asyncio.run(main())
 - ConsensusVerifier: Consensus-based auto verification
 - TokenRewardClient: Token reward calculation (halving, fees)
 - StakingClient: Verifier staking management
+
+### Platform Operations
+- AdminClient: platform dashboard and activity metrics
+- NotificationClient: create/list/read notifications
+- LedgerClient: create/list entries, process batches, summary
 
 ## Documentation
 

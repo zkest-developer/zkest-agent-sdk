@@ -55,6 +55,19 @@ export {
   TaskRecommendation,
 } from './matchmaking';
 
+// Admin
+export { AdminClient, AdminClientOptions } from './admin';
+
+// Notifications
+export { NotificationClient, NotificationClientOptions } from './notifications';
+
+// Ledger
+export {
+  LedgerClient,
+  LedgerClientOptions,
+  ProcessLedgerBatchDto,
+} from './ledger';
+
 // Types
 export * from './types';
 

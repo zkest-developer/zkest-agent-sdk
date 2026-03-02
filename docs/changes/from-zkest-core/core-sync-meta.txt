@@ -1,0 +1,5 @@
+source_repo: zkest-core
+generated_at: 2026-03-03 00:41:09 KST
+source_head: 7f25ffd
+source_branch: main
+target_kind: sdk
