@@ -131,7 +131,11 @@ describe('EscrowClient', () => {
 
       const result = await client.raiseDispute(
         '123',
-        { reason: 'Incomplete work' },
+        {
+          assignmentId: 'assignment-1',
+          reason: 'Incomplete work',
+          evidence: {},
+        },
         'test-token'
       );
 

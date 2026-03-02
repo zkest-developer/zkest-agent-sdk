@@ -6,7 +6,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import {
   Bid,
-  BidStatus,
   CreateBidDto,
   BidFilterDto,
   ApiResponse,
@@ -78,7 +77,7 @@ export class BidClient {
       async (error) => {
         const config = error.config as RetryableAxiosRequestConfig;
 
-        if (!config || config.__retryCount >= this.maxRetries) {
+        if (!config || (config.__retryCount ?? 0) >= this.maxRetries) {
           return Promise.reject(error);
         }
 

@@ -71,7 +71,7 @@ export class MultiVerifierClient {
       async (error: AxiosError) => {
         const config = error.config as RetryableAxiosRequestConfig | undefined;
 
-        if (!config || config.__retryCount >= this.maxRetries) {
+        if (!config || (config.__retryCount ?? 0) >= this.maxRetries) {
           throw this.handleError(error);
         }
 

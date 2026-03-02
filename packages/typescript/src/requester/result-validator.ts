@@ -143,8 +143,9 @@ export class ResultValidator {
     return {
       name: 'file-type',
       validate: (result) => {
-        if (!result.fileUrl) return false;
-        const extension = result.fileUrl.split('.').pop()?.toLowerCase();
+        const fileUrl = result['fileUrl'];
+        if (typeof fileUrl !== 'string') return false;
+        const extension = fileUrl.split('.').pop()?.toLowerCase();
         return extension ? allowedTypes.includes(extension) : false;
       },
     };
@@ -159,8 +160,9 @@ export class ResultValidator {
     return {
       name: 'file-size',
       validate: (result) => {
-        if (!result.fileSize) return false;
-        return result.fileSize <= maxSizeBytes;
+        const fileSize = result['fileSize'];
+        if (typeof fileSize !== 'number') return false;
+        return fileSize <= maxSizeBytes;
       },
     };
   }
@@ -174,8 +176,9 @@ export class ResultValidator {
     return {
       name: 'score-threshold',
       validate: (result) => {
-        if (result.score === undefined) return false;
-        return result.score >= threshold;
+        const score = result['score'];
+        if (typeof score !== 'number') return false;
+        return score >= threshold;
       },
     };
   }
@@ -204,8 +207,11 @@ export class ResultValidator {
     return {
       name: 'freshness',
       validate: (result) => {
-        if (!result.timestamp) return false;
-        const age = Date.now() - new Date(result.timestamp).getTime();
+        const timestamp = result['timestamp'];
+        if (typeof timestamp !== 'string' && typeof timestamp !== 'number' && !(timestamp instanceof Date)) {
+          return false;
+        }
+        const age = Date.now() - new Date(timestamp).getTime();
         return age <= maxAgeMs;
       },
     };

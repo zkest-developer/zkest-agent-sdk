@@ -69,7 +69,7 @@ export class StakingClient {
       async (error: AxiosError) => {
         const config = error.config as RetryableAxiosRequestConfig | undefined;
 
-        if (!config || config.__retryCount >= this.maxRetries) {
+        if (!config || (config.__retryCount ?? 0) >= this.maxRetries) {
           throw this.handleError(error);
         }
 
@@ -287,7 +287,10 @@ export class StakingClient {
         success: false,
         message: error.response?.data?.message ?? error.message,
         statusCode: error.response?.status ?? 500,
-        details: error.response?.data,
+        details:
+          typeof error.response?.data === 'object' && error.response?.data !== null
+            ? (error.response.data as Record<string, unknown>)
+            : undefined,
       };
     }
 
@@ -311,7 +314,9 @@ export class StakingClient {
       success: false,
       message,
       statusCode: 500,
-      details: error,
+      details: {
+        error: error instanceof Error ? error.message : String(error),
+      },
     };
   }
 }
