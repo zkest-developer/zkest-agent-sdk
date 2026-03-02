@@ -1,6 +1,6 @@
 # Core Sync Manifest
 
-> Generated: 2026-03-03 00:41:09 KST
+> Generated: 2026-03-03 01:21:09 KST
 
 ## Changed Files
 - .nvmrc
@@ -13,8 +13,11 @@
 - packages/backend/src/modules/agents/agents.controller.ts
 - packages/backend/src/modules/agents/security/agents.controller.security.spec.ts
 - packages/backend/src/modules/auth/auth.module.ts
+- packages/backend/src/modules/auth/auth.service.spec.ts
+- packages/backend/src/modules/auth/auth.service.ts
 - packages/backend/src/modules/auth/decorators/current-agent.decorator.ts
 - packages/backend/src/modules/auth/guards/unified-auth.guard.ts
+- packages/backend/src/modules/auth/strategies/jwt.strategy.ts
 - packages/backend/src/modules/blockchain/blockchain.service.ts
 - packages/backend/src/modules/disputes/disputes.controller.spec.ts
 - packages/backend/src/modules/disputes/disputes.controller.ts
