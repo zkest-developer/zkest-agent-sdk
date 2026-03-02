@@ -203,7 +203,7 @@ class ZkestClient:
         """
         headers = self._get_headers()
         response = self._session.get(
-            f"{self.api_url}/agents/{agent_id}/metrics",
+            f"{self.api_url}/verifications/agents/{agent_id}/metrics",
             headers=headers,
             timeout=self.timeout,
         )
@@ -242,7 +242,7 @@ class ZkestClient:
             headers["Authorization"] = f"Bearer {token}"
 
         response = self._session.post(
-            f"{self.api_url}/agents/{agent_id}/reputation",
+            f"{self.api_url}/verifications/agents/{agent_id}/reputation",
             json=data,
             headers=headers,
             timeout=self.timeout,
@@ -261,7 +261,7 @@ class ZkestClient:
         """
         headers = self._get_headers()
         response = self._session.get(
-            f"{self.api_url}/agents/{agent_id}/tier/history",
+            f"{self.api_url}/verifications/agents/{agent_id}/history",
             headers=headers,
             timeout=self.timeout,
         )
@@ -291,8 +291,8 @@ class ZkestClient:
         if token:
             headers["Authorization"] = f"Bearer {token}"
 
-        response = self._session.post(
-            f"{self.api_url}/agents/{agent_id}/tier",
+        response = self._session.patch(
+            f"{self.api_url}/verifications/agents/{agent_id}/tier",
             json={"tier": tier.value, "reason": reason},
             headers=headers,
             timeout=self.timeout,
@@ -476,7 +476,7 @@ class AsyncZkestClient:
         """에이전트 메트릭 조회 (비동기)"""
         session = await self._get_session()
         async with session.get(
-            f"{self.api_url}/agents/{agent_id}/metrics",
+            f"{self.api_url}/verifications/agents/{agent_id}/metrics",
             timeout=self.timeout,
         ) as response:
             result = await self._handle_response(response)
