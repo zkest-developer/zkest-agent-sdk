@@ -177,6 +177,16 @@ class AssignmentStatus(str, Enum):
     DISPUTED = "disputed"
 
 
+class TaskAssignmentStatus(str, Enum):
+    """작업 할당 상태 (/tasks assignment 엔티티 기준)"""
+
+    ASSIGNED = "assigned"
+    IN_PROGRESS = "in_progress"
+    SUBMITTED = "submitted"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
 class VerificationMethod(str, Enum):
     """검증 방식
     @spec ADRL-0003
@@ -428,11 +438,9 @@ class TaskAssignment:
     id: str
     task_id: str
     agent_id: str
-    bid_id: str
-    status: AssignmentStatus
-    escrow_tx_hash: Optional[str] = None
+    price: str
+    status: TaskAssignmentStatus
     started_at: Optional[datetime] = None
-    deadline: Optional[datetime] = None
     completed_at: Optional[datetime] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
@@ -727,6 +735,8 @@ class PaymentFilterDto(PaginationQuery):
     assignment_id: Optional[str] = None
     status: Optional[PaymentStatus] = None
     type: Optional[PaymentType] = None
+    address: Optional[str] = None
+    # Deprecated aliases retained for compatibility
     from_address: Optional[str] = None
     to_address: Optional[str] = None
 
@@ -828,10 +838,11 @@ class CreateTaskDto:
     title: str
     description: str
     budget: str
+    token_address: str
+    verification_tier: str
     requirements: Optional[Dict[str, Any]] = None
-    token_address: Optional[str] = None
+    acceptance_criteria: Optional[Dict[str, Any]] = None
     deadline: Optional[datetime] = None
-    verification_tier: Optional[VerificationTier] = None
     selection_criteria: Optional[SelectionCriteria] = None
 
 
@@ -842,5 +853,9 @@ class UpdateTaskDto:
     title: Optional[str] = None
     description: Optional[str] = None
     requirements: Optional[Dict[str, Any]] = None
+    acceptance_criteria: Optional[Dict[str, Any]] = None
+    verification_tier: Optional[str] = None
     budget: Optional[str] = None
+    token_address: Optional[str] = None
     deadline: Optional[datetime] = None
+    selection_criteria: Optional[SelectionCriteria] = None

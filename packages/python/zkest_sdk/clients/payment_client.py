@@ -35,10 +35,9 @@ class PaymentStatistics:
     """결제 통계"""
 
     total_payments: int
-    total_amount: str
-    by_status: Dict[PaymentStatus, int]
-    by_type: Dict[PaymentType, str]
-    average_confirmation_time: float
+    by_status: Dict[str, int]
+    by_type: Dict[str, int]
+    total_volume: str
 
 
 @dataclass
@@ -136,10 +135,12 @@ class PaymentClient:
                 params['status'] = filter_dto.status.value
             if filter_dto.type:
                 params['type'] = filter_dto.type.value
-            if filter_dto.from_address:
-                params['fromAddress'] = filter_dto.from_address
-            if filter_dto.to_address:
-                params['toAddress'] = filter_dto.to_address
+            if filter_dto.address:
+                params['address'] = filter_dto.address
+            elif filter_dto.from_address:
+                params['address'] = filter_dto.from_address
+            elif filter_dto.to_address:
+                params['address'] = filter_dto.to_address
             if filter_dto.limit:
                 params['limit'] = filter_dto.limit
             if filter_dto.offset:
@@ -155,14 +156,9 @@ class PaymentClient:
 
         return PaymentStatistics(
             total_payments=data['totalPayments'],
-            total_amount=data['totalAmount'],
-            by_status={
-                PaymentStatus(k): v for k, v in data['byStatus'].items()
-            },
-            by_type={
-                PaymentType(k): v for k, v in data['byType'].items()
-            },
-            average_confirmation_time=data['averageConfirmationTime'],
+            by_status={k: int(v) for k, v in data.get('byStatus', {}).items()},
+            by_type={k: int(v) for k, v in data.get('byType', {}).items()},
+            total_volume=str(data.get('totalVolume', '0')),
         )
 
     def find_one(self, payment_id: str) -> CorePayment:

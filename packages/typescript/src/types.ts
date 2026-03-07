@@ -70,6 +70,7 @@ export enum BidStatus {
  * @spec ADRL-0003
  */
 export enum PaymentType {
+  // Legacy value retained for backward compatibility. Not accepted by current backend create DTO.
   ESCROW_DEPOSIT = 'escrow_deposit',
   PAYMENT = 'payment',
   REFUND = 'refund',
@@ -408,6 +409,22 @@ export enum TaskStatus {
 }
 
 /**
+ * Marketplace Task Status (backend /tasks module)
+ * @spec ADRL-0003
+ */
+export enum MarketplaceTaskStatus {
+  POSTED = 'posted',
+  BIDDING = 'bidding',
+  ASSIGNED = 'assigned',
+  IN_PROGRESS = 'in_progress',
+  SUBMITTED = 'submitted',
+  VERIFICATION = 'verification',
+  COMPLETED = 'completed',
+  CANCELLED = 'cancelled',
+  DISPUTED = 'disputed',
+}
+
+/**
  * Verification Evidence for Task
  */
 export interface TaskVerificationEvidence {
@@ -591,7 +608,7 @@ export interface CoreTask {
   budget: string;
   tokenAddress: string;
   selectionCriteria: SelectionCriteria;
-  status: TaskStatus;
+  status: MarketplaceTaskStatus;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -632,14 +649,24 @@ export interface TaskAssignment {
   id: string;
   taskId: string;
   agentId: string;
-  bidId: string;
-  escrowTxHash?: string;
+  price: string;
   startedAt?: Date;
-  deadline?: Date;
   completedAt?: Date;
-  status: AssignmentStatus;
+  status: TaskAssignmentStatus;
   createdAt: Date;
   updatedAt: Date;
+}
+
+/**
+ * Task Assignment Status (backend task_assignments entity)
+ * @spec ADRL-0003
+ */
+export enum TaskAssignmentStatus {
+  ASSIGNED = 'assigned',
+  IN_PROGRESS = 'in_progress',
+  SUBMITTED = 'submitted',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
 }
 
 /**
@@ -954,9 +981,11 @@ export interface PaginatedResponse<T> {
  * Filter DTOs
  */
 export interface TaskFilterDto extends PaginationQuery {
-  status?: TaskStatus;
+  status?: MarketplaceTaskStatus;
   requesterId?: string;
+  // Deprecated: /tasks filter does not currently support agentId on backend
   agentId?: string;
+  // Deprecated: /tasks filter does not currently support verificationTier on backend
   verificationTier?: VerificationTier;
 }
 
@@ -970,6 +999,9 @@ export interface PaymentFilterDto extends PaginationQuery {
   assignmentId?: string;
   status?: PaymentStatus;
   type?: PaymentType;
+  // Preferred by backend (/payments?address=...)
+  address?: string;
+  // Deprecated aliases retained for compatibility; mapped to address by clients.
   fromAddress?: string;
   toAddress?: string;
 }
@@ -1063,10 +1095,11 @@ export interface CreateTaskDto {
   title: string;
   description: string;
   requirements?: Record<string, unknown>;
+  acceptanceCriteria?: Record<string, unknown>;
+  verificationTier: string;
   budget: string;
-  tokenAddress?: string;
+  tokenAddress: string;
   deadline?: Date;
-  verificationTier?: VerificationTier;
   selectionCriteria?: SelectionCriteria;
 }
 
@@ -1077,6 +1110,10 @@ export interface UpdateTaskDto {
   title?: string;
   description?: string;
   requirements?: Record<string, unknown>;
+  acceptanceCriteria?: Record<string, unknown>;
+  verificationTier?: string;
   budget?: string;
+  tokenAddress?: string;
   deadline?: Date;
+  selectionCriteria?: SelectionCriteria;
 }

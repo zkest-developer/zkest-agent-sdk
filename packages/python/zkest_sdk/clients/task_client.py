@@ -4,6 +4,7 @@ Task Client - Zkest Task Management API Client
 @spec ADRL-0003
 """
 
+from datetime import datetime
 from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
 import requests
@@ -11,8 +12,11 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from ..types import (
-    Task,
+    CoreTask,
     TaskStatus,
+    TaskAssignment,
+    TaskAssignmentStatus,
+    SelectionCriteria,
     CreateTaskDto,
     UpdateTaskDto,
     TaskFilterDto,
@@ -54,7 +58,7 @@ class TaskClient:
         tasks = client.find_all(TaskFilterDto(status=TaskStatus.POSTED))
 
         # 에이전트 할당
-        client.assign('task-123', 'agent-456')
+        client.assign('task-123', 'agent-456', '10.5')
         ```
     """
 
@@ -97,21 +101,21 @@ class TaskClient:
         response.raise_for_status()
         return response.json()
 
-    def create(self, dto: CreateTaskDto) -> Task:
+    def create(self, dto: CreateTaskDto) -> CoreTask:
         """새 작업 생성"""
         data = {
             'title': dto.title,
             'description': dto.description,
             'budget': dto.budget,
+            'tokenAddress': dto.token_address,
+            'verificationTier': dto.verification_tier,
         }
         if dto.requirements:
             data['requirements'] = dto.requirements
-        if dto.token_address:
-            data['tokenAddress'] = dto.token_address
+        if dto.acceptance_criteria:
+            data['acceptanceCriteria'] = dto.acceptance_criteria
         if dto.deadline:
             data['deadline'] = dto.deadline.isoformat()
-        if dto.verification_tier:
-            data['verificationTier'] = dto.verification_tier.value
         if dto.selection_criteria:
             data['selectionCriteria'] = {
                 'method': dto.selection_criteria.method,
@@ -125,7 +129,7 @@ class TaskClient:
 
     def find_all(
         self, filter_dto: Optional[TaskFilterDto] = None
-    ) -> List[Task]:
+    ) -> List[CoreTask]:
         """필터링과 함께 모든 작업 조회"""
         params = {}
         if filter_dto:
@@ -133,24 +137,20 @@ class TaskClient:
                 params['status'] = filter_dto.status.value
             if filter_dto.requester_id:
                 params['requesterId'] = filter_dto.requester_id
-            if filter_dto.agent_id:
-                params['agentId'] = filter_dto.agent_id
-            if filter_dto.verification_tier:
-                params['verificationTier'] = filter_dto.verification_tier.value
+            if filter_dto.page:
+                params['page'] = filter_dto.page
             if filter_dto.limit:
                 params['limit'] = filter_dto.limit
-            if filter_dto.offset:
-                params['offset'] = filter_dto.offset
 
         result = self._request('GET', '/tasks', params=params)
         return [self._parse_task(item) for item in result['data']]
 
-    def find_one(self, task_id: str) -> Task:
+    def find_one(self, task_id: str) -> CoreTask:
         """ID로 작업 조회"""
         result = self._request('GET', f'/tasks/{task_id}')
         return self._parse_task(result['data'])
 
-    def update(self, task_id: str, dto: UpdateTaskDto) -> Task:
+    def update(self, task_id: str, dto: UpdateTaskDto) -> CoreTask:
         """작업 수정"""
         data = {}
         if dto.title:
@@ -159,47 +159,90 @@ class TaskClient:
             data['description'] = dto.description
         if dto.requirements:
             data['requirements'] = dto.requirements
+        if dto.acceptance_criteria:
+            data['acceptanceCriteria'] = dto.acceptance_criteria
+        if dto.verification_tier:
+            data['verificationTier'] = dto.verification_tier
         if dto.budget:
             data['budget'] = dto.budget
+        if dto.token_address:
+            data['tokenAddress'] = dto.token_address
         if dto.deadline:
             data['deadline'] = dto.deadline.isoformat()
+        if dto.selection_criteria:
+            data['selectionCriteria'] = {
+                'method': dto.selection_criteria.method,
+                'weights': dto.selection_criteria.weights,
+                'minReputation': dto.selection_criteria.min_reputation,
+                'maxDeliveryTime': dto.selection_criteria.max_delivery_time,
+            }
 
         result = self._request('PATCH', f'/tasks/{task_id}', json=data)
         return self._parse_task(result['data'])
 
-    def update_status(self, task_id: str, status: TaskStatus) -> Task:
+    def update_status(self, task_id: str, status: TaskStatus) -> CoreTask:
         """작업 상태 업데이트"""
         result = self._request(
             'PATCH', f'/tasks/{task_id}/status', json={'status': status.value}
         )
         return self._parse_task(result['data'])
 
-    def assign(self, task_id: str, agent_id: str) -> Task:
+    def assign(self, task_id: str, agent_id: str, price: str) -> TaskAssignment:
         """에이전트를 작업에 할당"""
         result = self._request(
-            'POST', f'/tasks/{task_id}/assign', json={'agentId': agent_id}
+            'POST', f'/tasks/{task_id}/assign', json={'agentId': agent_id, 'price': price}
         )
-        return self._parse_task(result['data'])
+        return self._parse_assignment(result['data'])
 
-    def cancel(self, task_id: str, reason: Optional[str] = None) -> Task:
+    def cancel(self, task_id: str) -> CoreTask:
         """작업 취소"""
-        data = {}
-        if reason:
-            data['reason'] = reason
-
-        result = self._request('POST', f'/tasks/{task_id}/cancel', json=data)
+        result = self._request('POST', f'/tasks/{task_id}/cancel', json={})
         return self._parse_task(result['data'])
 
-    def _parse_task(self, data: Dict[str, Any]) -> Task:
+    def _parse_task(self, data: Dict[str, Any]) -> CoreTask:
         """API 응답을 Task 객체로 변환"""
-        return Task(
+        selection_criteria_data = data.get('selectionCriteria')
+        selection_criteria: Optional[SelectionCriteria] = None
+        if selection_criteria_data and isinstance(selection_criteria_data, dict):
+            selection_criteria = SelectionCriteria(
+                method=selection_criteria_data.get('method', 'lowest_price'),
+                weights=selection_criteria_data.get('weights'),
+                min_reputation=selection_criteria_data.get('minReputation'),
+                max_delivery_time=selection_criteria_data.get('maxDeliveryTime'),
+            )
+
+        return CoreTask(
             id=data['id'],
+            requester_id=data['requesterId'],
             title=data['title'],
             description=data['description'],
-            task_type=data.get('taskType', 'other'),
-            status=data['status'],
-            budget=float(data.get('budget', 0)),
-            deadline=data.get('deadline'),
-            skills_required=data.get('skillsRequired', []),
-            metadata=data.get('metadata', {}),
+            budget=data['budget'],
+            token_address=data['tokenAddress'],
+            verification_tier=data['verificationTier'],
+            status=TaskStatus(data['status']),
+            requirements=data.get('requirements', {}),
+            acceptance_criteria=data.get('acceptanceCriteria', {}),
+            selection_criteria=selection_criteria,
+            deadline=self._parse_datetime(data.get('deadline')),
+            created_at=self._parse_datetime(data.get('createdAt')),
+            updated_at=self._parse_datetime(data.get('updatedAt')),
         )
+
+    def _parse_assignment(self, data: Dict[str, Any]) -> TaskAssignment:
+        return TaskAssignment(
+            id=data['id'],
+            task_id=data['taskId'],
+            agent_id=data['agentId'],
+            price=data['price'],
+            status=TaskAssignmentStatus(data['status']),
+            started_at=self._parse_datetime(data.get('startedAt')),
+            completed_at=self._parse_datetime(data.get('completedAt')),
+            created_at=self._parse_datetime(data.get('createdAt')),
+            updated_at=self._parse_datetime(data.get('updatedAt')),
+        )
+
+    @staticmethod
+    def _parse_datetime(value: Optional[str]) -> Optional[datetime]:
+        if not value:
+            return None
+        return datetime.fromisoformat(value.replace('Z', '+00:00'))

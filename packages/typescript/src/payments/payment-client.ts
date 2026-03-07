@@ -6,7 +6,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import {
   CorePayment,
-  PaymentType,
   PaymentStatus,
   CreatePaymentDto,
   PaymentFilterDto,
@@ -30,10 +29,9 @@ export interface PaymentClientOptions {
  */
 export interface PaymentStatistics {
   totalPayments: number;
-  totalAmount: string;
-  byStatus: Record<PaymentStatus, number>;
-  byType: Record<PaymentType, string>;
-  averageConfirmationTime: number;
+  byStatus: Record<string, number>;
+  byType: Record<string, number>;
+  totalVolume: string;
 }
 
 /**
@@ -124,9 +122,20 @@ export class PaymentClient {
    * Get all payments with optional filtering
    */
   async findAll(filter?: PaymentFilterDto): Promise<CorePayment[]> {
+    const params: Record<string, unknown> = { ...(filter ?? {}) };
+    if (filter?.address) {
+      params.address = filter.address;
+    } else if (filter?.fromAddress) {
+      params.address = filter.fromAddress;
+    } else if (filter?.toAddress) {
+      params.address = filter.toAddress;
+    }
+    delete params.fromAddress;
+    delete params.toAddress;
+
     const response = await this.client.get<PaginatedResponse<CorePayment>>(
       '/payments',
-      { params: filter }
+      { params }
     );
     return response.data.data;
   }

@@ -4,12 +4,17 @@ from zkest_sdk.clients.notification_client import (
     NotificationClientOptions,
 )
 from zkest_sdk.clients.ledger_client import LedgerClient, LedgerClientOptions
+from zkest_sdk.clients.task_client import TaskClient, TaskClientOptions
+from zkest_sdk.clients.payment_client import PaymentClient, PaymentClientOptions
 from zkest_sdk.types import (
     CreateNotificationDto,
     NotificationType,
     CreateLedgerEntryDto,
     LedgerDirection,
     LedgerReferenceType,
+    TaskFilterDto,
+    TaskStatus,
+    PaymentFilterDto,
 )
 
 
@@ -120,3 +125,86 @@ def test_ledger_client_create_and_summary():
     summary = client.get_summary()
     assert summary.total_entries == 7
     assert summary.posted_volume == "12.5"
+
+
+def test_task_client_assign_requires_price_and_returns_assignment():
+    client = TaskClient(TaskClientOptions(base_url="https://api.test.com", api_key="k"))
+
+    captured = {}
+
+    def fake_request(method, path, params=None, json=None):
+        captured["method"] = method
+        captured["path"] = path
+        captured["json"] = json
+        return {
+            "success": True,
+            "data": {
+                "id": "a1",
+                "taskId": "t1",
+                "agentId": "ag1",
+                "price": "15.0",
+                "status": "assigned",
+                "createdAt": "2026-03-03T01:00:00.000Z",
+                "updatedAt": "2026-03-03T01:00:00.000Z",
+            },
+        }
+
+    client._request = fake_request
+    assignment = client.assign("t1", "ag1", "15.0")
+
+    assert captured["method"] == "POST"
+    assert captured["path"] == "/tasks/t1/assign"
+    assert captured["json"] == {"agentId": "ag1", "price": "15.0"}
+    assert assignment.price == "15.0"
+    assert assignment.status.value == "assigned"
+
+
+def test_task_client_find_all_uses_page_limit_filters():
+    client = TaskClient(TaskClientOptions(base_url="https://api.test.com", api_key="k"))
+
+    captured = {}
+
+    def fake_request(method, path, params=None, json=None):
+        captured["params"] = params
+        return {"success": True, "data": []}
+
+    client._request = fake_request
+    client.find_all(TaskFilterDto(status=TaskStatus.POSTED, requester_id="r1", page=2, limit=10))
+
+    assert captured["params"] == {
+        "status": "posted",
+        "requesterId": "r1",
+        "page": 2,
+        "limit": 10,
+    }
+
+
+def test_payment_client_stats_and_address_filter_mapping():
+    client = PaymentClient(PaymentClientOptions(base_url="https://api.test.com", api_key="k"))
+
+    captured = {}
+
+    def fake_request(method, path, params=None, json=None):
+        if path == "/payments/statistics":
+            return {
+                "success": True,
+                "data": {
+                    "totalPayments": 4,
+                    "byStatus": {"pending": 1, "confirmed": 3},
+                    "byType": {"payment": 3, "fee": 1},
+                    "totalVolume": "88.5",
+                },
+            }
+
+        captured["params"] = params
+        return {"success": True, "data": []}
+
+    client._request = fake_request
+
+    stats = client.get_statistics()
+    assert stats.total_payments == 4
+    assert stats.by_type["payment"] == 3
+    assert stats.total_volume == "88.5"
+
+    client.find_all(PaymentFilterDto(from_address="0xabc"))
+    assert captured["params"]["address"] == "0xabc"
