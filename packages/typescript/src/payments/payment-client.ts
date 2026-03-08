@@ -123,7 +123,10 @@ export class PaymentClient {
    */
   async findAll(filter?: PaymentFilterDto): Promise<CorePayment[]> {
     const params: Record<string, unknown> = { ...(filter ?? {}) };
-    if (filter?.address) {
+    if (filter?.wallet) {
+      params.wallet = filter.wallet;
+      delete params.address;
+    } else if (filter?.address) {
       params.address = filter.address;
     } else if (filter?.fromAddress) {
       params.address = filter.fromAddress;

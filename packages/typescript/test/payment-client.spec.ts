@@ -48,6 +48,30 @@ describe('PaymentClient', () => {
     });
   });
 
+  it('uses wallet/taskId/agentId filters when provided', async () => {
+    mockAxiosInstance.get.mockResolvedValue({
+      data: { success: true, data: [], total: 0 },
+    });
+
+    await client.findAll({
+      wallet: '0xwallet',
+      taskId: 'task-1',
+      agentId: 'agent-1',
+      limit: 10,
+      offset: 5,
+    });
+
+    expect(mockAxiosInstance.get).toHaveBeenCalledWith('/payments', {
+      params: {
+        wallet: '0xwallet',
+        taskId: 'task-1',
+        agentId: 'agent-1',
+        limit: 10,
+        offset: 5,
+      },
+    });
+  });
+
   it('returns statistics in backend shape', async () => {
     const payload = {
       totalPayments: 12,

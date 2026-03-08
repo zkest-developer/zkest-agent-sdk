@@ -92,6 +92,12 @@ class LedgerClient:
     def find_entries(self, filter_dto: Optional[LedgerFilterDto] = None) -> List[CoreLedgerEntry]:
         params: Dict[str, Any] = {}
         if filter_dto:
+            if filter_dto.task_id:
+                params['taskId'] = filter_dto.task_id
+            if filter_dto.agent_id:
+                params['agentId'] = filter_dto.agent_id
+            if filter_dto.wallet:
+                params['wallet'] = filter_dto.wallet
             if filter_dto.status:
                 params['status'] = filter_dto.status.value
             if filter_dto.reference_type:
@@ -100,9 +106,9 @@ class LedgerClient:
                 params['referenceId'] = filter_dto.reference_id
             if filter_dto.batch_id:
                 params['batchId'] = filter_dto.batch_id
-            if filter_dto.limit:
+            if filter_dto.limit is not None:
                 params['limit'] = filter_dto.limit
-            if filter_dto.offset:
+            if filter_dto.offset is not None:
                 params['offset'] = filter_dto.offset
 
         result = self._request('GET', '/ledger/entries', params=params)

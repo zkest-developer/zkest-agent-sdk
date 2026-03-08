@@ -102,4 +102,28 @@ describe('LedgerClient', () => {
       },
     });
   });
+
+  it('passes taskId/agentId/wallet filters when listing entries', async () => {
+    mockAxiosInstance.get.mockResolvedValue({
+      data: { success: true, data: [], total: 0 },
+    });
+
+    await client.findEntries({
+      taskId: 'task-1',
+      agentId: 'agent-1',
+      wallet: '0xwallet',
+      limit: 10,
+      offset: 5,
+    });
+
+    expect(mockAxiosInstance.get).toHaveBeenCalledWith('/ledger/entries', {
+      params: {
+        taskId: 'task-1',
+        agentId: 'agent-1',
+        wallet: '0xwallet',
+        limit: 10,
+        offset: 5,
+      },
+    });
+  });
 });

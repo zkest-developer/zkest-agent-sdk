@@ -118,15 +118,17 @@ class AgentClient:
         """필터링과 함께 모든 에이전트 조회"""
         params = {}
         if filter_dto:
+            if filter_dto.wallet:
+                params['wallet'] = filter_dto.wallet
             if filter_dto.is_active is not None:
                 params['isActive'] = filter_dto.is_active
             if filter_dto.min_reputation is not None:
                 params['minReputation'] = filter_dto.min_reputation
             if filter_dto.tier:
                 params['tier'] = filter_dto.tier.value
-            if filter_dto.limit:
+            if filter_dto.limit is not None:
                 params['limit'] = filter_dto.limit
-            if filter_dto.offset:
+            if filter_dto.offset is not None:
                 params['offset'] = filter_dto.offset
 
         result = self._request('GET', '/agents', params=params)

@@ -7,6 +7,8 @@ from zkest_sdk.clients.notification_client import (
 from zkest_sdk.clients.ledger_client import LedgerClient, LedgerClientOptions
 from zkest_sdk.clients.task_client import TaskClient, TaskClientOptions
 from zkest_sdk.clients.payment_client import PaymentClient, PaymentClientOptions
+from zkest_sdk.clients.dispute_client import DisputeClient, DisputeClientOptions
+from zkest_sdk.clients.agent_client import AgentClient, AgentClientOptions
 from zkest_sdk.types import (
     CreateNotificationDto,
     NotificationType,
@@ -17,6 +19,9 @@ from zkest_sdk.types import (
     TaskFilterDto,
     TaskStatus,
     PaymentFilterDto,
+    DisputeFilterDto,
+    DisputeStatus,
+    AgentFilterDto,
     UpdateBidDto,
 )
 
@@ -163,6 +168,35 @@ def test_ledger_client_maps_reference_id_filter():
     assert captured["params"]["referenceId"] == "payment-1"
 
 
+def test_ledger_client_maps_public_explorer_filters():
+    client = LedgerClient(LedgerClientOptions(base_url="https://api.test.com", api_key="k"))
+
+    captured = {}
+
+    def fake_request(method, path, params=None, json=None):
+        captured["params"] = params
+        return {"success": True, "data": []}
+
+    client._request = fake_request
+    client.find_entries(
+        LedgerFilterDto(
+            task_id="task-1",
+            agent_id="agent-1",
+            wallet="0xabc",
+            limit=10,
+            offset=0,
+        )
+    )
+
+    assert captured["params"] == {
+        "taskId": "task-1",
+        "agentId": "agent-1",
+        "wallet": "0xabc",
+        "limit": 10,
+        "offset": 0,
+    }
+
+
 def test_bid_client_update_uses_patch_contract():
     client = BidClient(BidClientOptions(base_url="https://api.test.com", api_key="k"))
 
@@ -285,3 +319,100 @@ def test_payment_client_stats_and_address_filter_mapping():
 
     client.find_all(PaymentFilterDto(from_address="0xabc"))
     assert captured["params"]["address"] == "0xabc"
+
+
+def test_payment_client_maps_wallet_task_agent_filters():
+    client = PaymentClient(PaymentClientOptions(base_url="https://api.test.com", api_key="k"))
+
+    captured = {}
+
+    def fake_request(method, path, params=None, json=None):
+        captured["params"] = params
+        return {"success": True, "data": []}
+
+    client._request = fake_request
+    client.find_all(
+        PaymentFilterDto(
+            task_id="task-1",
+            assignment_id="assignment-1",
+            agent_id="agent-1",
+            wallet="0xwallet",
+            limit=10,
+            offset=0,
+        )
+    )
+
+    assert captured["params"] == {
+        "taskId": "task-1",
+        "assignmentId": "assignment-1",
+        "agentId": "agent-1",
+        "wallet": "0xwallet",
+        "limit": 10,
+        "offset": 0,
+    }
+
+
+def test_dispute_client_maps_extended_filters():
+    client = DisputeClient(DisputeClientOptions(base_url="https://api.test.com", api_key="k"))
+
+    captured = {}
+
+    def fake_request(method, path, params=None, json=None):
+        captured["params"] = params
+        return {"success": True, "data": []}
+
+    client._request = fake_request
+    client.find_all(
+        DisputeFilterDto(
+            task_id="task-1",
+            assignment_id="assignment-1",
+            agent_id="agent-1",
+            wallet="0xwallet",
+            initiator_id="init-1",
+            respondent_id="resp-1",
+            arbitrator_id="arb-1",
+            status=DisputeStatus.OPEN,
+            limit=20,
+            offset=0,
+        )
+    )
+
+    assert captured["params"] == {
+        "taskId": "task-1",
+        "assignmentId": "assignment-1",
+        "agentId": "agent-1",
+        "wallet": "0xwallet",
+        "initiatorId": "init-1",
+        "respondentId": "resp-1",
+        "arbitratorId": "arb-1",
+        "status": "open",
+        "limit": 20,
+        "offset": 0,
+    }
+
+
+def test_agent_client_maps_wallet_filter():
+    client = AgentClient(AgentClientOptions(base_url="https://api.test.com", api_key="k"))
+
+    captured = {}
+
+    def fake_request(method, path, params=None, json=None):
+        captured["params"] = params
+        return {"success": True, "data": []}
+
+    client._request = fake_request
+    client.find_all(
+        AgentFilterDto(
+            wallet="0xwallet",
+            is_active=True,
+            limit=20,
+            offset=0,
+        )
+    )
+
+    assert captured["params"] == {
+        "wallet": "0xwallet",
+        "isActive": True,
+        "limit": 20,
+        "offset": 0,
+    }

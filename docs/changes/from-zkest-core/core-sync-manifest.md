@@ -1,59 +1,55 @@
 # Core Sync Manifest
 
-> Generated: 2026-03-03 01:21:09 KST
+> Generated: 2026-03-08 22:59:59 KST
 
 ## Changed Files
-- .nvmrc
-- docs/changes/
 - docs/todo/CURRENT.md
+- docs/todo/MARKETPLACE_FRONTEND_EXECUTION_PLAN.md
+- docs/todo/MARKET_WEB_V1_LAUNCH_PLAN.md
 - docs/todo/ROADMAP.md
-- package.json
-- packages/backend/src/modules/admin/
-- packages/backend/src/modules/agents/agents.controller.spec.ts
-- packages/backend/src/modules/agents/agents.controller.ts
-- packages/backend/src/modules/agents/security/agents.controller.security.spec.ts
-- packages/backend/src/modules/auth/auth.module.ts
-- packages/backend/src/modules/auth/auth.service.spec.ts
-- packages/backend/src/modules/auth/auth.service.ts
-- packages/backend/src/modules/auth/decorators/current-agent.decorator.ts
-- packages/backend/src/modules/auth/guards/unified-auth.guard.ts
-- packages/backend/src/modules/auth/strategies/jwt.strategy.ts
-- packages/backend/src/modules/blockchain/blockchain.service.ts
+- packages/backend/src/modules/admin/admin.controller.spec.ts
+- packages/backend/src/modules/admin/admin.module.ts
+- packages/backend/src/modules/admin/admin.service.spec.ts
+- packages/backend/src/modules/admin/admin.service.ts
+- packages/backend/src/modules/agents/agents.service.ts
+- packages/backend/src/modules/agents/dto/agent-filter.dto.ts
+- packages/backend/src/modules/bids/bids.controller.spec.ts
+- packages/backend/src/modules/bids/bids.controller.ts
 - packages/backend/src/modules/disputes/disputes.controller.spec.ts
 - packages/backend/src/modules/disputes/disputes.controller.ts
-- packages/backend/src/modules/ledger/
-- packages/backend/src/modules/notifications/
-- packages/backend/src/modules/payments/payments.controller.spec.ts
-- packages/backend/src/modules/payments/payments.controller.ts
-- packages/backend/src/modules/verifications/task-verification.controller.spec.ts
-- packages/backend/src/modules/verifications/task-verification.controller.ts
-- packages/backend/src/modules/verifications/task-verification.service.spec.ts
-- packages/backend/src/modules/verifications/task-verification.service.ts
-- packages/backend/src/modules/verifications/verifications.controller.spec.ts
-- packages/backend/src/modules/verifications/verifications.controller.ts
-- packages/contracts/package.json
-- scripts/sync/
+- packages/backend/src/modules/disputes/disputes.module.ts
+- packages/backend/src/modules/disputes/disputes.service.spec.ts
+- packages/backend/src/modules/disputes/disputes.service.ts
+- packages/backend/src/modules/disputes/dto/dispute-filter.dto.ts
+- packages/backend/src/modules/ledger/dto/ledger-filter.dto.ts
+- packages/backend/src/modules/ledger/ledger.controller.ts
+- packages/backend/src/modules/ledger/ledger.module.ts
+- packages/backend/src/modules/ledger/ledger.service.spec.ts
+- packages/backend/src/modules/ledger/ledger.service.ts
+- packages/backend/src/modules/notifications/notification-delivery.service.spec.ts
+- packages/backend/src/modules/notifications/notification-delivery.service.ts
+- packages/backend/src/modules/notifications/notifications.service.spec.ts
+- packages/backend/src/modules/notifications/notifications.service.ts
+- packages/backend/src/modules/payments/dto/payment-filter.dto.ts
+- packages/backend/src/modules/payments/payments.module.ts
+- packages/backend/src/modules/payments/payments.service.spec.ts
+- packages/backend/src/modules/payments/payments.service.ts
 
 ## API Endpoints Touched
 - packages/backend/src/modules/admin/admin.controller.ts
   - base: /admin
   -   @Get('dashboard')
   -   @Get('activity')
-- packages/backend/src/modules/agents/agents.controller.ts
-  - base: /agents
+- packages/backend/src/modules/bids/bids.controller.ts
+  - base: /bids
   -   @Post()
   -   @Get()
-  -   @Get('top')
-  -   @Get('stats/:id')
-  -   @Get('wallet/:walletAddress')
   -   @Get(':id')
-  -   @Get(':id/skills')
-  -   @Post(':id/skills')
-  -   @Patch('skills/:skillId/verify')
-  -   @Patch(':id/tier')
+  -   @Get('task/:taskId')
   -   @Patch(':id')
-  -   @Patch(':id/deactivate')
-  -   @Patch(':id/reactivate')
+  -   @Patch(':id/accept')
+  -   @Patch(':id/reject')
+  -   @Patch(':id/withdraw')
 - packages/backend/src/modules/disputes/disputes.controller.ts
   - base: /disputes
   -   @Post()
@@ -68,42 +64,6 @@
   -   @Get('entries')
   -   @Post('process-batch')
   -   @Get('summary')
-- packages/backend/src/modules/notifications/notifications.controller.ts
-  - base: /notifications
-  -   @Post()
-  -   @Get()
-  -   @Patch(':id/read')
-  -   @Patch('read-all')
-  -   @Get('unread-count')
-- packages/backend/src/modules/payments/payments.controller.ts
-  - base: /payments
-  -   @Post()
-  -   @Get()
-  -   @Get('statistics')
-  -   @Get(':id')
-  -   @Get('assignment/:assignmentId')
-  -   @Get('address/:address')
-  -   @Post(':id/status')
-- packages/backend/src/modules/verifications/task-verification.controller.ts
-  - base: /tasks
-  -   @Post(':taskId/verification-request')
-  -   @Get(':taskId/verifiers')
-  -   @Post(':taskId/verifications')
-  -   @Post(':taskId/auto-approve')
-  -   @Get('verifications/:verificationId')
-  -   @Get(':taskId/verifications')
-  -   @Get('verifiers/pending')
-  -   @Get('verifiers/:verifierId/metrics')
-- packages/backend/src/modules/verifications/verifications.controller.ts
-  - base: /verifications
-  -   @Post()
-  -   @Get('pending')
-  -   @Get(':id')
-  -   @Patch(':id')
-  -   @Get('agents/:agentId/metrics')
-  -   @Post('agents/:agentId/reputation')
-  -   @Get('agents/:agentId/history')
-  -   @Patch('agents/:agentId/tier')
 
 ## Docs/SDK Sync Checklist
 - [ ] zkest-agent-docs API reference update

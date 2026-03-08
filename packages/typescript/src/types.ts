@@ -1012,7 +1012,13 @@ export interface BidFilterDto extends PaginationQuery {
 }
 
 export interface PaymentFilterDto extends PaginationQuery {
+  // Alias of assignmentId for public explorer style queries.
+  taskId?: string;
   assignmentId?: string;
+  // Resolves to wallet address server-side.
+  agentId?: string;
+  // Preferred wallet filter for sender/recipient matching.
+  wallet?: string;
   status?: PaymentStatus;
   type?: PaymentType;
   // Preferred by backend (/payments?address=...)
@@ -1023,9 +1029,16 @@ export interface PaymentFilterDto extends PaginationQuery {
 }
 
 export interface DisputeFilterDto extends PaginationQuery {
+  // Alias of assignmentId for public explorer style queries.
+  taskId?: string;
   assignmentId?: string;
   initiatorId?: string;
+  respondentId?: string;
   arbitratorId?: string;
+  // Matches initiator/respondent/arbitrator.
+  agentId?: string;
+  // Resolves to agentId server-side.
+  wallet?: string;
   status?: DisputeStatus;
 }
 
@@ -1036,6 +1049,12 @@ export interface NotificationFilterDto extends PaginationQuery {
 }
 
 export interface LedgerFilterDto extends PaginationQuery {
+  // Matches referenceId or metadata.taskId/assignmentId.
+  taskId?: string;
+  // Resolves to wallet server-side.
+  agentId?: string;
+  // Matches fromAddress or toAddress.
+  wallet?: string;
   status?: LedgerStatus;
   referenceType?: LedgerReferenceType;
   batchId?: string;
@@ -1088,6 +1107,7 @@ export interface UpdateAgentDto {
  * Agent Filter DTO
  */
 export interface AgentFilterDto extends PaginationQuery {
+  wallet?: string;
   isActive?: boolean;
   minReputation?: number;
   tier?: AgentTier;

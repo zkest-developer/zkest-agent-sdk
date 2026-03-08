@@ -129,21 +129,27 @@ class PaymentClient:
         """필터링과 함께 모든 결제 조회"""
         params = {}
         if filter_dto:
+            if filter_dto.task_id:
+                params['taskId'] = filter_dto.task_id
             if filter_dto.assignment_id:
                 params['assignmentId'] = filter_dto.assignment_id
+            if filter_dto.agent_id:
+                params['agentId'] = filter_dto.agent_id
             if filter_dto.status:
                 params['status'] = filter_dto.status.value
             if filter_dto.type:
                 params['type'] = filter_dto.type.value
-            if filter_dto.address:
+            if filter_dto.wallet:
+                params['wallet'] = filter_dto.wallet
+            elif filter_dto.address:
                 params['address'] = filter_dto.address
             elif filter_dto.from_address:
                 params['address'] = filter_dto.from_address
             elif filter_dto.to_address:
                 params['address'] = filter_dto.to_address
-            if filter_dto.limit:
+            if filter_dto.limit is not None:
                 params['limit'] = filter_dto.limit
-            if filter_dto.offset:
+            if filter_dto.offset is not None:
                 params['offset'] = filter_dto.offset
 
         result = self._request('GET', '/payments', params=params)

@@ -754,7 +754,10 @@ class BidFilterDto(PaginationQuery):
 class PaymentFilterDto(PaginationQuery):
     """결제 필터 DTO"""
 
+    task_id: Optional[str] = None
     assignment_id: Optional[str] = None
+    agent_id: Optional[str] = None
+    wallet: Optional[str] = None
     status: Optional[PaymentStatus] = None
     type: Optional[PaymentType] = None
     address: Optional[str] = None
@@ -767,9 +770,13 @@ class PaymentFilterDto(PaginationQuery):
 class DisputeFilterDto(PaginationQuery):
     """분쟁 필터 DTO"""
 
+    task_id: Optional[str] = None
     assignment_id: Optional[str] = None
     initiator_id: Optional[str] = None
+    respondent_id: Optional[str] = None
     arbitrator_id: Optional[str] = None
+    agent_id: Optional[str] = None
+    wallet: Optional[str] = None
     status: Optional[DisputeStatus] = None
 
 
@@ -786,6 +793,9 @@ class NotificationFilterDto(PaginationQuery):
 class LedgerFilterDto(PaginationQuery):
     """원장 필터 DTO"""
 
+    task_id: Optional[str] = None
+    agent_id: Optional[str] = None
+    wallet: Optional[str] = None
     status: Optional[LedgerStatus] = None
     reference_type: Optional[LedgerReferenceType] = None
     batch_id: Optional[str] = None
@@ -836,6 +846,7 @@ class UpdateAgentDto:
 class AgentFilterDto(PaginationQuery):
     """에이전트 필터 DTO"""
 
+    wallet: Optional[str] = None
     is_active: Optional[bool] = None
     min_reputation: Optional[float] = None
     tier: Optional[AgentTier] = None
