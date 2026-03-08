@@ -1,4 +1,5 @@
 from zkest_sdk.clients.admin_client import AdminClient, AdminClientOptions
+from zkest_sdk.clients.bid_client import BidClient, BidClientOptions
 from zkest_sdk.clients.notification_client import (
     NotificationClient,
     NotificationClientOptions,
@@ -12,9 +13,11 @@ from zkest_sdk.types import (
     CreateLedgerEntryDto,
     LedgerDirection,
     LedgerReferenceType,
+    LedgerFilterDto,
     TaskFilterDto,
     TaskStatus,
     PaymentFilterDto,
+    UpdateBidDto,
 )
 
 
@@ -31,6 +34,12 @@ def test_admin_client_get_dashboard_parsing():
                 "disputes": 1,
                 "payments": 6,
             },
+            "alerts": {
+                "openDisputes": 1,
+                "failedPayouts": 2,
+                "pendingVerifications": 3,
+                "unreadAlerts": 4,
+            },
             "updatedAt": "2026-03-03T01:00:00.000Z",
         },
     }
@@ -38,6 +47,8 @@ def test_admin_client_get_dashboard_parsing():
     dashboard = client.get_dashboard()
     assert dashboard.totals.agents == 10
     assert dashboard.totals.active_agents == 8
+    assert dashboard.alerts.open_disputes == 1
+    assert dashboard.alerts.unread_alerts == 4
 
 
 def test_notification_client_create_and_unread_count():
@@ -125,6 +136,72 @@ def test_ledger_client_create_and_summary():
     summary = client.get_summary()
     assert summary.total_entries == 7
     assert summary.posted_volume == "12.5"
+
+
+def test_ledger_client_maps_reference_id_filter():
+    client = LedgerClient(LedgerClientOptions(base_url="https://api.test.com", api_key="k"))
+
+    captured = {}
+
+    def fake_request(method, path, params=None, json=None):
+        captured["path"] = path
+        captured["params"] = params
+        return {"success": True, "data": []}
+
+    client._request = fake_request
+    client.find_entries(
+        LedgerFilterDto(
+            reference_type=LedgerReferenceType.PAYMENT,
+            reference_id="payment-1",
+            limit=20,
+            offset=0,
+        )
+    )
+
+    assert captured["path"] == "/ledger/entries"
+    assert captured["params"]["referenceType"] == "payment"
+    assert captured["params"]["referenceId"] == "payment-1"
+
+
+def test_bid_client_update_uses_patch_contract():
+    client = BidClient(BidClientOptions(base_url="https://api.test.com", api_key="k"))
+
+    captured = {}
+
+    def fake_request(method, path, params=None, json=None):
+        captured["method"] = method
+        captured["path"] = path
+        captured["json"] = json
+        return {
+            "success": True,
+            "data": {
+                "id": "b1",
+                "taskId": "t1",
+                "agentId": "a1",
+                "price": json.get("price", "100"),
+                "estimatedDurationHours": json.get("estimatedDurationHours", 24),
+                "proposal": json.get("proposal"),
+                "status": "pending",
+                "createdAt": "2026-03-03T01:00:00.000Z",
+                "updatedAt": "2026-03-03T01:00:00.000Z",
+            },
+        }
+
+    client._request = fake_request
+
+    updated = client.update(
+        "b1",
+        UpdateBidDto(price="120", estimated_duration_hours=12, proposal="updated"),
+    )
+
+    assert captured["method"] == "PATCH"
+    assert captured["path"] == "/bids/b1"
+    assert captured["json"] == {
+        "price": "120",
+        "estimatedDurationHours": 12,
+        "proposal": "updated",
+    }
+    assert updated.price == "120"
 
 
 def test_task_client_assign_requires_price_and_returns_assignment():

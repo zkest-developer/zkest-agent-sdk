@@ -96,6 +96,8 @@ class LedgerClient:
                 params['status'] = filter_dto.status.value
             if filter_dto.reference_type:
                 params['referenceType'] = filter_dto.reference_type.value
+            if filter_dto.reference_id:
+                params['referenceId'] = filter_dto.reference_id
             if filter_dto.batch_id:
                 params['batchId'] = filter_dto.batch_id
             if filter_dto.limit:

@@ -430,6 +430,17 @@ class CreateBidDto:
 
 
 @dataclass
+class UpdateBidDto:
+    """입찰 수정 DTO
+    @spec ADRL-0003
+    """
+
+    price: Optional[str] = None
+    estimated_duration_hours: Optional[int] = None
+    proposal: Optional[str] = None
+
+
+@dataclass
 class TaskAssignment:
     """작업 할당 정보
     @spec ADRL-0003
@@ -633,10 +644,21 @@ class AdminDashboardTotals:
 
 
 @dataclass
+class AdminDashboardAlerts:
+    """어드민 대시보드 알림 집계"""
+
+    open_disputes: int
+    failed_payouts: int
+    pending_verifications: int
+    unread_alerts: int
+
+
+@dataclass
 class AdminDashboardMetrics:
     """어드민 대시보드 메트릭"""
 
     totals: AdminDashboardTotals
+    alerts: AdminDashboardAlerts
     updated_at: str
 
 
@@ -767,6 +789,7 @@ class LedgerFilterDto(PaginationQuery):
     status: Optional[LedgerStatus] = None
     reference_type: Optional[LedgerReferenceType] = None
     batch_id: Optional[str] = None
+    reference_id: Optional[str] = None
 
 
 # ============================================================

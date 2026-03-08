@@ -78,4 +78,28 @@ describe('LedgerClient', () => {
     expect(result).toEqual({ batchId: 'batch-1', processedCount: 12 });
     expect(mockAxiosInstance.post).toHaveBeenCalledWith('/ledger/process-batch', { limit: 12 });
   });
+
+  it('passes referenceId filter when listing entries', async () => {
+    mockAxiosInstance.get.mockResolvedValue({
+      data: { success: true, data: [], total: 0 },
+    });
+
+    await client.findEntries({
+      referenceType: LedgerReferenceType.PAYMENT,
+      referenceId: 'payment-1',
+      status: LedgerStatus.PENDING,
+      limit: 20,
+      offset: 0,
+    });
+
+    expect(mockAxiosInstance.get).toHaveBeenCalledWith('/ledger/entries', {
+      params: {
+        referenceType: LedgerReferenceType.PAYMENT,
+        referenceId: 'payment-1',
+        status: LedgerStatus.PENDING,
+        limit: 20,
+        offset: 0,
+      },
+    });
+  });
 });

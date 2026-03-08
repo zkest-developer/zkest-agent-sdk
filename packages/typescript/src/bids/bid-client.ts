@@ -7,6 +7,7 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import {
   Bid,
   CreateBidDto,
+  UpdateBidDto,
   BidFilterDto,
   ApiResponse,
   PaginatedResponse,
@@ -116,6 +117,17 @@ export class BidClient {
    */
   async findOne(id: string): Promise<Bid> {
     const response = await this.client.get<ApiResponse<Bid>>(`/bids/${id}`);
+    return response.data.data;
+  }
+
+  /**
+   * Update a pending bid
+   */
+  async update(id: string, dto: UpdateBidDto): Promise<Bid> {
+    const response = await this.client.patch<ApiResponse<Bid>>(
+      `/bids/${id}`,
+      dto
+    );
     return response.data.data;
   }
 

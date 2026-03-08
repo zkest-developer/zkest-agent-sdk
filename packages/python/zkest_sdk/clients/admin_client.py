@@ -8,7 +8,12 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-from ..types import AdminDashboardMetrics, AdminDashboardTotals, AdminRecentActivity
+from ..types import (
+    AdminDashboardAlerts,
+    AdminDashboardMetrics,
+    AdminDashboardTotals,
+    AdminRecentActivity,
+)
 
 
 @dataclass
@@ -65,6 +70,7 @@ class AdminClient:
         result = self._request('GET', '/admin/dashboard')
         data = result['data']
         totals = data['totals']
+        alerts = data.get('alerts', {})
         return AdminDashboardMetrics(
             totals=AdminDashboardTotals(
                 agents=totals.get('agents', 0),
@@ -73,6 +79,12 @@ class AdminClient:
                 escrows=totals.get('escrows', 0),
                 disputes=totals.get('disputes', 0),
                 payments=totals.get('payments', 0),
+            ),
+            alerts=AdminDashboardAlerts(
+                open_disputes=alerts.get('openDisputes', 0),
+                failed_payouts=alerts.get('failedPayouts', 0),
+                pending_verifications=alerts.get('pendingVerifications', 0),
+                unread_alerts=alerts.get('unreadAlerts', 0),
             ),
             updated_at=data.get('updatedAt', ''),
         )

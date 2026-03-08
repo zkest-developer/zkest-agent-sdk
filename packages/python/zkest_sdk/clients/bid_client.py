@@ -14,6 +14,7 @@ from ..types import (
     Bid,
     BidStatus,
     CreateBidDto,
+    UpdateBidDto,
     BidFilterDto,
 )
 
@@ -131,6 +132,19 @@ class BidClient:
     def find_one(self, bid_id: str) -> Bid:
         """ID로 입찰 조회"""
         result = self._request('GET', f'/bids/{bid_id}')
+        return self._parse_bid(result['data'])
+
+    def update(self, bid_id: str, dto: UpdateBidDto) -> Bid:
+        """대기 중인 입찰 수정"""
+        data: Dict[str, Any] = {}
+        if dto.price is not None:
+            data['price'] = dto.price
+        if dto.estimated_duration_hours is not None:
+            data['estimatedDurationHours'] = dto.estimated_duration_hours
+        if dto.proposal is not None:
+            data['proposal'] = dto.proposal
+
+        result = self._request('PATCH', f'/bids/{bid_id}', json=data)
         return self._parse_bid(result['data'])
 
     def find_by_task(self, task_id: str) -> List[Bid]:

@@ -39,6 +39,12 @@ describe('AdminClient', () => {
         disputes: 2,
         payments: 15,
       },
+      alerts: {
+        openDisputes: 2,
+        failedPayouts: 1,
+        pendingVerifications: 3,
+        unreadAlerts: 4,
+      },
       updatedAt: '2026-03-03T01:00:00.000Z',
     };
 

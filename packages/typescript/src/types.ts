@@ -642,6 +642,16 @@ export interface CreateBidDto {
 }
 
 /**
+ * Update Bid DTO
+ * @spec ADRL-0003
+ */
+export interface UpdateBidDto {
+  price?: string;
+  estimatedDurationHours?: number;
+  proposal?: string;
+}
+
+/**
  * Task Assignment
  * @spec ADRL-0003
  */
@@ -872,6 +882,12 @@ export interface AdminDashboardMetrics {
     disputes: number;
     payments: number;
   };
+  alerts: {
+    openDisputes: number;
+    failedPayouts: number;
+    pendingVerifications: number;
+    unreadAlerts: number;
+  };
   updatedAt: string;
 }
 
@@ -1023,6 +1039,7 @@ export interface LedgerFilterDto extends PaginationQuery {
   status?: LedgerStatus;
   referenceType?: LedgerReferenceType;
   batchId?: string;
+  referenceId?: string;
 }
 
 // ============================================================
